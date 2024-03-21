@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="container">
     <h1>{{ title }}</h1>
     <div class="button-container">
       <button @click="addRandomContact">Add Random Contact</button>
       <button @click="sortByPopularity">Sort By Popularity</button>
       <button @click="sortByName">Sort By Name</button>
     </div>
-    <table>
+    <table class="table">
       <thead>
         <tr>
           <th>Picture</th>
@@ -19,7 +19,14 @@
       </thead>
       <tbody>
         <tr v-for="contact in contacts" :key="contact.id">
-          <contact-item :contact="contact" @delete="deleteContact(contact.id)" />
+          <td><img :src="contact.pictureUrl" alt="contact picture"></td>
+          <td>{{ contact.name }}</td>
+          <td>{{ contact.popularity.toFixed(2) }}</td>
+          <td v-if="contact.wonOscar">🏆</td>
+          <td v-else></td>
+          <td v-if="contact.wonEmmy">🏆</td>
+          <td v-else></td>
+          <td><button @click="deleteContact(contact.id)">Delete</button></td>
         </tr>
       </tbody>
     </table>
@@ -28,20 +35,14 @@
 
 <script>
 import contacts from './contacts.json';
-import ContactItem from './components/tableContacts.vue';
-
 export default {
   name: 'App',
-  components: {
-    ContactItem
-  },
   data() {
     return {
       title: 'IronContacts',
       contacts: [],
       remainingContacts: [],
       sortOrder: 'desc',
-      sortByField: ''
     };
   },
   mounted() {
@@ -51,7 +52,7 @@ export default {
   methods: {
     addRandomContact() {
       if (this.remainingContacts.length === 0) {
-        alert('No hay más contactos disponibles.');
+        alert('No more contacts available.');
         return;
       }
       const randomIndex = Math.floor(Math.random() * this.remainingContacts.length);
@@ -87,9 +88,16 @@ export default {
 </script>
 
 <style>
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
 h1 {
   font-weight: bold;
   text-align: center;
+  margin-bottom: 20px;
 }
 
 .button-container {
@@ -100,38 +108,33 @@ h1 {
 
 .button-container button {
   margin-right: 10px;
-  padding: 10px;
+  padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  border: 1px solid #ddd;
+  background-color: #4CAF50;
+  color: white;
   font-size: 16px;
   cursor: pointer;
 }
 
-.actions-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-
-table {
-  border-collapse: collapse;
+.table {
   width: 100%;
-  margin-top: 20px;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* Adding shadow */
 }
 
 th,
 td {
-  padding: 12px;
+  border: 1px solid #ddd;
+  padding: 8px;
   text-align: left;
-  border-bottom: 1px solid #ddd;
 }
 
 th {
   background-color: #f2f2f2;
-  font-weight: bold;
-  font-size: 18px;
 }
 
 td img {
